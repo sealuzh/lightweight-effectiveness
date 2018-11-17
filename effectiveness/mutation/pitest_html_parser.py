@@ -47,7 +47,10 @@ class PitestHTMLParser(HTMLParser):
         if self.__coverage_tag_found == 1 and not self.__flag_line:
             covered_lines = float(data.split('/')[0])
             lines = float(data.split('/')[1])
-            self.__line_coverage = covered_lines/lines
+            if lines == 0:
+                self.__line_coverage == float('nan')
+            else:
+                self.__line_coverage = covered_lines/lines
             self.__flag_line = True
 
         if self.__coverage_tag_found == 2 and not self.__flag_mutation:

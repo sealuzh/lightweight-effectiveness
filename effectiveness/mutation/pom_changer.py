@@ -22,6 +22,7 @@ def get_pitest_maven_skeleton(class_to_mutate, test_to_run, threads=4):
     <artifactId>pitest-maven</artifactId>
     <version>1.3.2</version>
     <configuration>
+    <failWhenNoMutations>false</failWhenNoMutations>
     <targetClasses>
     <param>
     """+class_to_mutate+"""
@@ -32,6 +33,9 @@ def get_pitest_maven_skeleton(class_to_mutate, test_to_run, threads=4):
     """+test_to_run+"""
     </param>
     </targetTests>
+    <mutators>
+    <mutator>ALL</mutator>
+    </mutators>
     <avoidCallsTo>
     <threads>"""+str(threads)+"""</threads>
     <avoidCallsTo>java.util.logging</avoidCallsTo>

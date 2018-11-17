@@ -31,11 +31,19 @@ def get_clone_script(project_list, dir=PROJECTS, path='./get_projects.sh'):
 
     clone = open(path, 'a')
     clone.write(get_script_head())
+    clone.write('set -e\n')
     clone.write('cd {}\n'.format(dir))
     for project in project_list:
         name = get_project_name(project)
         clone.write(get_git_clone(project, name))
-    clone.write('cd ..')
+        clone.write(move_in(name))
+        clone.write('git fetch --tags\n')
+        clone.write('latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)\n')
+        clone.write('git checkout $latestTag\n')
+        clone.write(mvn_compile())
+        clone.write(mvn_test())
+        clone.write('cd ..\n')
+    clone.write('cd ..\n')
     clone.close()
 
 
@@ -60,25 +68,58 @@ def get_script(project_list, path='./run_experiment.sh'):
     script.write('mkdir {} logs\n'.format(MUTATION_RESULTS))
 
     for i, project in enumerate(project_list):
+        test_counter = 0
         name = get_project_name(project)
         script.write('echo \'* {} out of {} -> {}\'\n'.format(i+1, len(project_list), name))
         script.write('mkdir {}/{}\n'.format(MUTATION_RESULTS, name))
         # move in, compile and test
         script.write('\n\necho \'* Compiling {}\'\n'.format(name))
         script.write(move_in(name))
-        script.write(mvn_compile())
-        script.write(mvn_test())
-        script.write('\n')
-        script.write('echo \'* Caching original pom\'\n')
+
+        print('* Processing {}'.format(name))
+        # look for submodules
+        project_path = os.path.join(PROJECTS, name)
+        # copy the pom
         script.write(copy_pom())
-        # get classes and test
-        pairs = get_test_and_classes(os.path.join(PROJECTS, name))
-        generate_sequence_for_each_project(name, script, pairs)
+        if has_submodules(project_path):
+            # the project has submodules
+            sub_modules = get_submodules(project_path)
+            for module in sub_modules:
+                sub_modules_path = os.path.join(project_path, module)
+                no_tests = write_mutation_per_unit(path_module=sub_modules_path,
+                                                   script=script,
+                                                   name=name,
+                                                   module_name=module,
+                                                   submodules=sub_modules)
+                test_counter += no_tests
+            print('* Total tests for {} = {}'.format(name, test_counter))
+        else:
+            # the project has not submodules
+            write_mutation_per_unit(path_module=project_path,
+                                    script=script,
+                                    name=name)
         script.write('echo \'* Restoring original pom\'\n')
         restore_pom(script)
         script.write(go_back())
-
     script.close()
+
+
+def write_mutation_per_unit(path_module, script, name, module_name=None, submodules=None):
+    """
+    Writes the commands for the mutation for a given units, either a project with no modules or a sub-module of a
+    Maven project
+    :param path_module: the path for the project of the path for the sub-module
+    :param script: the output file
+    :param name: the name of the project
+    :param module_name: the name of the module
+    :param submodules: the eventual list of submodules
+    :return the number of pairs found
+    """
+    pairs = get_test_and_classes(project_path=path_module, project_name=name, module_name=module_name, save=True)
+    generate_sequence_for_each_project(name, script, pairs,
+                                       module=module_name,
+                                       submodules=submodules)
+    return len(pairs)
 
 
 def calculate_results():
@@ -89,15 +130,13 @@ def calculate_results():
     return "{} {}/calculate_results.py".format(python_command, MUTATION_PACKAGE)
 
 
-def generate_sequence_for_each_project(project, script, pairs):
+def generate_sequence_for_each_project(project, script, pairs, module=None, submodules=None):
     """Generates the code used to run maven for each of the classes in the project
-
-    Arguments
-    -------------
-    - project: the namedir of the project
-    - script: the file to write on
-    - pairs: the list of Pair class that store the matches between tests and classes
-
+    :param project: the name of the directory of the project
+    :param script: the file to write on
+    :param pairs: the list of Pair class that store the matches between tests and classes
+    :param module: the name of the module. It can be None. If none, there are no modules
+    :param submodules: the other submodules for this project. Is None if there are no submodules
     """
     timeout_command = 'gtimeout' if platform.system() == 'Darwin' else 'timeout'
     for pair in pairs:
@@ -107,10 +146,23 @@ def generate_sequence_for_each_project(project, script, pairs):
         script.write('\n{} {}/pom_changer.py {} {} {}\n'.format(python_command, MUTATION_PACKAGE,
                                                                 project, class_to_mutate, test_to_run))
         script.write('echo \'* Mutating {}\'\n'.format(class_to_mutate))
-        script.write('{} 20m mvn org.pitest:pitest-maven:mutationCoverage -X -DoutputFormats=HTML '
-                     '--log-file ../../logs/{}.txt\n'.format(timeout_command, test_to_run))
-        script.write('mv target/pit-reports target/{}\n'.format(test_to_run))
-        script.write('cp -r target/{} {}/{}\n\n'.format(test_to_run, MUTATION_RESULTS, project))
+        if not module:
+            # the project has no modules
+            script.write('{} 20m mvn org.pitest:pitest-maven:mutationCoverage -X -DoutputFormats=HTML '
+                         '--log-file ../../logs/{}.txt\n'.format(timeout_command, test_to_run))
+            script.write('mv target/pit-reports target/{}\n'.format(test_to_run))
+            script.write('cp -r target/{} {}/{}\n\n'.format(test_to_run, MUTATION_RESULTS, project))
+        else:
+            # the project has modules
+            script.write('{} 20m mvn org.pitest:pitest-maven:mutationCoverage -X -DoutputFormats=HTML '
+                         '--log-file ../../logs/{}-{}.txt\n'.format(timeout_command, module, test_to_run))
+            # the pattern for saving the directory when there are modules is the following:
+            # module_name-fully.qualified.name
+            script.write('mv {}/target/pit-reports {}/target/{}-{}\n'.format(module, module, module, test_to_run))
+            for sub_module in submodules:
+                script.write('rm -rf {}/target/pit-reports\n'.format(sub_module))
+            script.write('cp -r {}/target/{}-{} {}/{}\n\n'.format(module, module, test_to_run, MUTATION_RESULTS,
+                                                                  project))
 
 
 def restore_pom(write, modified='pom.xml', cached='cached_pom.xml'):
@@ -133,17 +185,21 @@ def copy_pom(new_name='cached_pom.xml'):
     -------------
     - new_name: new name for the pom
     """
-    return "cp pom.xml {}\n".format(new_name)
+    return_string = '\n' \
+                    'echo \'* Caching original pom\'\n' \
+                    'cp pom.xml {}\n'.format(new_name)
+    return return_string
+
 
 
 def mvn_compile():
     """Returns the maven command needed to compile and package the project"""
-    return "mvn clean install\n"
+    return "mvn clean install -DskipTests\n"
 
 
 def mvn_test():
     """Returns the maven command needed to execute the test suite"""
-    return "mvn test\n"
+    return "mvn test -Dmaven.test.failure.ignore=true\n"
 
 
 def go_back():

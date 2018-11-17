@@ -48,7 +48,7 @@ class Project:
         self.recursive_glob(test_dir, pattern, exclude_pattern)
         self.look_for_cuts(src_dir)
         self.__list_matches = [i for i in self.__list_matches if i.get_qualified_source_name()]
-        print("Tests for {} = {}".format(self.__project, len(self.__list_matches)))
+        print("\t- Tests for {} = {}".format(self.__project, len(self.__list_matches)))
         return self.__list_matches
 
     def look_for_cuts(self, src_dir='.'):

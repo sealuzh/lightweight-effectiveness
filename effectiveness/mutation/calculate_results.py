@@ -9,12 +9,13 @@ __license__ = "MIT"
 __email__ = "grano@ifi.uzh.ch"
 
 
-def calculate_results(default_dir=RESULTS_DIR):
+def calculate_results(default_dir=RESULTS_DIR, clean=True):
     """Aggregates all the mutations calculated and add the information about the mutation
 
     Arguments
     -------------
     - default_dir: the dir where all the csv files are stores
+    - clean: flag to remove classes with no mutations
 
     """
     if not os.path.isdir(default_dir):
@@ -25,9 +26,16 @@ def calculate_results(default_dir=RESULTS_DIR):
     for project in result_csv:
         frames.append(pd.read_csv(project))
     aggregate = pd.concat(frames)
+    aggregate[['module']] = aggregate[['module']].fillna(value='')
     aggregate['mutation'] = aggregate.apply(lambda x: get_mutation_value_html(x), axis=1)
     aggregate['no_mutations'] = aggregate.apply(lambda x: get_mutation_value_html(x, True), axis=1)
     aggregate['line_coverage'] = aggregate.apply(lambda x: get_mutation_value_html(x, False, True), axis=1)
+
+    if clean:
+        print('Rows before the cleaning = {}'.format(aggregate.shape[0]))
+        aggregate = aggregate.dropna()
+        aggregate = aggregate[aggregate['no_mutations'] != 0]
+        print('Rows after the cleaning = {}'.format(aggregate.shape[0]))
     aggregate.to_csv('{}/results.csv'.format(METRICS_DIR), index=False)
 
 
@@ -41,7 +49,11 @@ def get_mutation_value_html(row, ret_no_mutation=False, ret_line_cov=False):
     - ret_no_mutation: if true, returns the number of mutations; if false, the mutation score
 
     """
-    path = '{}/' + row.project + '/' + row.test_name + '/**/index.html'.format(MUTATION_RESULTS)
+    module_name = row.module
+    if module_name == '':
+        path = '{}/'.format(MUTATION_RESULTS) + row.project + '/' + row.test_name + '/**/index.html'
+    else:
+        path = '{}/'.format(MUTATION_RESULTS) + row.project + '/' + module_name + '-' + row.test_name + '/**/index.html'
     mutation_file = glob.glob(path, recursive=True)
     if not mutation_file:
         # no file = no mutations
@@ -64,7 +76,11 @@ def get_mutation_value(row, ret_no_mutation=False):
     - ret_no_mutation: if true, returns the number of mutations; if false, the mutation score
 
     """
-    path = '{}/' + row.project + '/' + row.test_name + '/**/mutations.csv'.format(MUTATION_RESULTS)
+    module_name = row.module
+    if module_name == '':
+        path = '{}/'.format(MUTATION_RESULTS) + row.project + '/' + row.test_name + '/**/index.html'
+    else:
+        path = '{}/'.format(MUTATION_RESULTS) + row.project + '/' + module_name + '-' + row.test_name + '/**/index.html'
     mutation_file = glob.glob(path, recursive=True)
     # used to reuse the expensive glob search
     if not mutation_file:

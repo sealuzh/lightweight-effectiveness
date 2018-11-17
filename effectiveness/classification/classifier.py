@@ -1,11 +1,5 @@
-__author__ = "Giovanni Grano"
-__email__ = "grano@ifi.uzh.ch"
-__license__ = "MIT"
-
 import numpy as np
 import matplotlib
-
-matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from sklearn.externals import joblib
 
@@ -23,6 +17,12 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+
+__author__ = "Giovanni Grano"
+__email__ = "grano@ifi.uzh.ch"
+__license__ = "MIT"
+
+matplotlib.use('Agg')
 
 
 def import_frame(consider_coverage=True):

@@ -34,7 +34,7 @@ def process_results(mutation=METRICS_DIR+'/results.csv', smells=METRICS_DIR+'/te
 
     mutation_frame = pd.read_csv(mutation)
     print("* Number of originally executed mutations = {}".format(len(mutation_frame)))
-    mutation_frame = mutation_frame.dropna()
+    mutation_frame = mutation_frame.dropna(subset=['mutation', 'line_coverage'])
     print("* Number of successfully mutation = {}".format(len(mutation_frame)))
     smells_frame = pd.read_csv(smells)
     ck_frame = pd.read_csv(ck)
@@ -100,12 +100,10 @@ def process_results(mutation=METRICS_DIR+'/results.csv', smells=METRICS_DIR+'/te
     prod_readability = pd.read_csv('{}/source_readability.csv'.format(readability))
     test_readability = pd.read_csv('{}/test_readability.csv'.format(readability))
     print("- Processing production readability")
-    filtered_frame['prod_readability'] = filtered_frame.apply(lambda x: get_readability(x, prod_readability,
-                                                                                        key='class_name'),
+    filtered_frame['prod_readability'] = filtered_frame.apply(lambda x: get_readability(x, prod_readability),
                                                               axis=1)
     print("- Processing test readability")
-    filtered_frame['test_readability'] = filtered_frame.apply(lambda x: get_readability(x, test_readability,
-                                                                                        key='test_name'),
+    filtered_frame['test_readability'] = filtered_frame.apply(lambda x: get_readability(x, test_readability),
                                                               axis=1)
 
     print("*-------------------------------------------")
@@ -113,7 +111,7 @@ def process_results(mutation=METRICS_DIR+'/results.csv', smells=METRICS_DIR+'/te
     filtered_frame.to_csv(output, index=False)
 
 
-def get_process_metric(row, flag, ck_frame, metric):
+def get_process_metric(row, flag, ck_frame, metric, verbose=False):
     """
     Returns the value for the given metric for a particular source
     :param row: the data frame row for the test
@@ -129,12 +127,12 @@ def get_process_metric(row, flag, ck_frame, metric):
     cut = row[name]
 
     aux = ck_frame[ck_frame['class'] == cut][metric]
-    if len(aux) != 1:
+    if len(aux) != 1 and verbose:
         print("\t* Two entries for {}".format(cut))
-    return aux.mean()
+    return aux.iloc[0]
 
 
-def get_readability(row, frame, key='class_name'):
+def get_readability(row, frame, key='class_name', verbose=False):
     """
     Returns the readability for the given production class or test
     :param row: the row of the original frame
@@ -144,12 +142,17 @@ def get_readability(row, frame, key='class_name'):
     cut = row[key]
 
     aux = frame[frame['tested_class'] == cut]['readability']
-    if len(aux) != 1:
+    if len(aux) != 1 and verbose:
         print("\t* {} entries for {}".format(str(len(aux)), cut))
-    return aux.mean()
+    try:
+        return aux.iloc[0]
+    except IndexError:
+        print(aux)
+        print('no value here')
+        return 0
 
 
-def get_production_code_smell(row, frame, smell, key='class_name'):
+def get_production_code_smell(row, frame, smell, key='class_name', verbose=False):
     """
     Returns the value for the given code smell for a production class
     :param row:
@@ -159,12 +162,12 @@ def get_production_code_smell(row, frame, smell, key='class_name'):
     """
     cut = row[key]
     aux = frame[frame['className'] == cut][smell]
-    if len(aux) != 1:
+    if len(aux) != 1 and verbose:
         print("\t* {} entries for {}".format(str(len(aux)), cut))
-    return aux.mean()
+    return int(aux.iloc[0])
 
 
-def get_smell_value(row, smells_frame, smell, key='test_name'):
+def get_smell_value(row, smells_frame, smell, key='test_name', verbose=False):
     """
     Returns the value for the given smell for a particular test
     :param row: the data frame row for the test
@@ -174,12 +177,12 @@ def get_smell_value(row, smells_frame, smell, key='test_name'):
     """
     cut = row[key]
     aux = smells_frame[smells_frame['test-suite'] == cut][smell]
-    if len(aux) != 1:
+    if len(aux) != 1 and verbose:
         print("\t* {} entries for {}".format(str(len(aux)), cut))
-    return aux.mean()
+    return aux.iloc[0]
 
 
-def get_ck_value(row, ck_frame, metric, key='class_name'):
+def get_ck_value(row, ck_frame, metric, key='class_name', verbose=False):
     """
     Returns the value for the given metric for a particular source
     :param row: the data frame row for the test
@@ -191,9 +194,9 @@ def get_ck_value(row, ck_frame, metric, key='class_name'):
     cut = row[key]
 
     aux = ck_frame[ck_frame['className'] == cut][metric]
-    if len(aux) != 1:
+    if len(aux) != 1 and verbose:
         print("\t* {} entries for {}".format(str(len(aux)), cut))
-    return aux.mean()
+    return aux.iloc[0]
 
 
 def separate_sets(complete_frame=METRICS_DIR+'/merge.csv', delimiter='quartile'):
