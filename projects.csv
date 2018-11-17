@@ -7,3 +7,13 @@ apache/commons-beanutils
 apache/commons-io
 checkstyle/checkstyle
 apache/commons-collections
+google/gson
+jhy/jsoup
+junit-team/junit4
+alibaba/fastjson
+dianping/cat
+square/javapoet
+JodaOrg/joda-beans
+google/guice
+ReactiveX/RxJava
+oracle/opengrok
