@@ -70,6 +70,12 @@ We provide also a Dockerfile that can be used to build an image to replicate the
 The full results about the accuracy of the 3 experimented algorithms are available in the [this](https://github.com/sealuzh/lightweight-effectiveness/tree/master/data) directory.
 The _dynamic_ suffix indicate the model trained with the line coverage metric, while the _static_ one imply only static metrics. The last suffix indicates the algorithm used, i.e., _rfc_ for Random Forest, _knn_ for K-Nearest Neighbors and _scv_ for Support Vector Classifier.
 
+## Metrics Extracted
+All the files with the metric values are available in [this](https://github.com/sealuzh/lightweight-effectiveness/tree/master/metrics) directory.
+
+## Projects
+We also share the entire set of 18 projects used in the study [here](https://github.com/sealuzh/lightweight-effectiveness/tree/master/projects)
+
 ## Metrics Used
 
 A detailed list of the metrics used in this work is reported at this [link](https://github.com/sealuzh/lightweight-effectiveness/blob/master/metrics.md) or, alternatively, in the wiki page of this repository. 
