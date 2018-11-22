@@ -65,6 +65,11 @@ will train a SVC classifier using also the line coverage with a 5-k inner and a 
 ## Docker image
 We provide also a Dockerfile that can be used to build an image to replicate the results. Please note that, since you will create a Ubuntu image, you have to specify `python3` instead of the usual `python` (with is the version 2.7 by default)
 
+## Full Results
+
+The full results about the accuracy of the 3 experimented algorithms are available in the [this](https://github.com/sealuzh/lightweight-effectiveness/tree/master/data) directory.
+The _dynamic_ suffix indicate the model trained with the line coverage metric, while the _static_ one imply only static metrics. The last suffix indicates the algorithm used, i.e., _rfc_ for Random Forest, _knn_ for K-Nearest Neighbors and _scv_ for Support Vector Classifier.
+
 ## Metrics Used
 
 A detailed list of the metrics used in this work is reported at this [link](https://github.com/sealuzh/lightweight-effectiveness/blob/master/metrics.md) or, alternatively, in the wiki page of this repository. 
