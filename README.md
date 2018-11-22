@@ -67,4 +67,4 @@ We provide also a Dockerfile that can be used to build an image to replicate the
 
 ## Metrics Used
 
-A detailed list of the metrics used in this work is reported at this [link](https://github.com/sealuzh/lightweight-effectiveness/blob/master/metrics.md) 
+A detailed list of the metrics used in this work is reported at this [link](https://github.com/sealuzh/lightweight-effectiveness/blob/master/metrics.md) or, alternatively, in the wiki page of this repository. 
