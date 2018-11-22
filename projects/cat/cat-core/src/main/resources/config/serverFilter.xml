@@ -1,0 +1,7 @@
+<server-filter-config>
+	<transaction-type>URL</transaction-type>
+	<transaction-name>/Heartbeat.html</transaction-name>
+	<transaction-name>/Heartbeat.jsp</transaction-name>
+	<domain>unusedDomain1</domain>
+	<domain>unusedDomain2</domain>
+</server-filter-config>

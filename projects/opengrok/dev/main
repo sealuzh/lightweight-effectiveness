@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#
+# Do not run coverage for forks as most people do not have extra tools enabled
+# for their fork.
+#
+extra_args=""
+if [ "x$TRAVIS_REPO_SLUG" == "xoracle/opengrok" ]; then
+	echo "Enabling Jacoco/Coveralls"
+	extra_args="jacoco:report org.eluder.coveralls:coveralls-maven-plugin:report"
+
+	#
+	# Sonar seems to only work on master branch commits.
+	#
+	if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
+		echo "Enabling Sonar"
+		extra_args="$extra_args sonar:sonar"
+	fi
+fi
+
+ret=0
+mvn -B -V verify $extra_args || ret=1
+node dev/parse.js || ret=1
+exit $ret

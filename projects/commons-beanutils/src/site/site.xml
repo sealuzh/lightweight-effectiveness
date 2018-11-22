@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project name="BeanUtils">
+    <bannerRight>
+        <name>Commons BeanUtils</name>
+        <src>/images/logo.png</src>
+        <href>/index.html</href>
+    </bannerRight>
+
+    <body>
+        <menu name="BeanUtils">
+            <item name="Overview"             href="/index.html"/>
+            <item name="Download"             href="http://commons.apache.org/beanutils/download_beanutils.cgi"/>
+            <item name="Dependencies"         href="/dependencies.html"/>
+            <item name="Mailing Lists"        href="/mail-lists.html"/>
+            <item name="Issue Tracking"       href="/issue-tracking.html"/>
+            <item name="Source Repository"    href="/source-repository.html"/>
+            <item name="License"              href="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+        </menu>
+
+        <menu name="Documentation">
+            <item name="Building"             href="/building.html"/>
+            <item name="History"              href="/changes-report.html"/>
+            <item name="1.9.3" collapse="true" href="/index.html">
+                <item name="Release Notes"    href="http://commons.apache.org/beanutils/javadocs/v1.9.3/RELEASE-NOTES.txt"/>
+                <item name="User Guide"       href="http://commons.apache.org/beanutils/javadocs/v1.9.3/apidocs/org/apache/commons/beanutils/package-summary.html#package_description"/>
+                <item name="API"              href="http://commons.apache.org/beanutils/javadocs/v1.9.3/apidocs/index.html"/>
+            </item>
+            <item name="1.9.2" collapse="true" href="/index.html">
+                <item name="Release Notes"    href="http://commons.apache.org/beanutils/javadocs/v1.9.2/RELEASE-NOTES.txt"/>
+                <item name="User Guide"       href="http://commons.apache.org/beanutils/javadocs/v1.9.2/apidocs/org/apache/commons/beanutils/package-summary.html#package_description"/>
+                <item name="API"              href="http://commons.apache.org/beanutils/javadocs/v1.9.2/apidocs/index.html"/>
+            </item>
+            <item name="1.8.3" collapse="true" href="/index.html">
+                <item name="Release Notes"    href="http://commons.apache.org/beanutils/javadocs/v1.8.3/RELEASE-NOTES.txt"/>
+                <item name="User Guide"       href="http://commons.apache.org/beanutils/javadocs/v1.8.3/apidocs/org/apache/commons/beanutils/package-summary.html#package_description"/>
+                <item name="API"              href="http://commons.apache.org/beanutils/javadocs/v1.8.3/apidocs/index.html"/>
+            </item>
+        </menu>
+
+    </body>
+
+</project>

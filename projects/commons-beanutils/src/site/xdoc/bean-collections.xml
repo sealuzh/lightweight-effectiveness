@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Commons</title>
+  <author email="dev@commons.apache.org">Commons Documentation Team</author>
+ </properties>
+
+ <body>
+
+<section name="Commons BeanUtils Bean Collections">
+
+<p>
+Dealing with collections of beans is a common feature of development in Java.
+A lot of time is spent creating bean-specific implementations 
+for standard collection manipulators such as functors and comparators.
+</p>
+
+<p>
+<code>BeanUtils Bean collections</code> is a library intended to 
+improve developer productivity by using sophisticated bean introspection 
+(from <code>BeanUtils</code>) 
+to allow general library classes to be used (rather than creating bean specific
+implementation classes).
+</p>
+
+<p>
+But won't this be slower? Yes, reflection is slower than direct references
+but in real life applications, this is typically insignificant. So why not use 
+these classes to speed development and then substitute faster implementations only
+where the profiler indicates there is a problem :) 
+</p>
+    <subsection name='Quick-Quick Guide To Functors'>
+        <p>
+Many of the classes in <code>bean-collections</code> are functor implementations
+specialized for bean properties. This is a very quick guide (aimed to let java developer
+know why functors make for elegant code).
+        </p>
+        <p>
+The word <code>functor</code> is mathematical in origin but comes into object oriented
+development from functional and logic coding. In Java terms, a functor 
+is a function that is encapsulated as an object (and so can be manipulated as an object).
+This allows elegant, concise and powerful techniques to be used. For example, 
+<a href='http://commons.apache.org/collections'>Commons Collections</a>
+contains utilities that allow functions (as functors) to be easily applied to 
+Collections.
+        </p>
+        <p>
+This is actually pretty useful when it comes to collections of beans. It's a common 
+problem to want to extract information from a collection of beans or to change all properties
+to a particular value. Functors can be a particularly elegant way to do this. So try them!
+You might just like them!
+        </p>
+        <p>
+For more information about functors, please read the introduction to the
+<a href='http://commons.apache.org/sandbox/functor/'>Commons Functor component</a>.
+        </p>
+    </subsection>
+</section>
+<section name='Releases'>
+        <p>
+BeanUtils Bean-Collections is distributed as an optional jar within the main 
+beanutils distribution. For details, see the 
+<a href='http://commons.apache.org/beanutils/index.html'>main BeanUtils website</a>
+        </p>
+</section>
+
+</body>
+</document>
