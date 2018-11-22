@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Commons</title>
+  <author email="dev@commons.apache.org">Commons Documentation Team</author>
+ </properties>
+
+ <body>
+
+<section name="Commons BeanUtils">
+
+<p>
+Most Java developers are used to creating Java classes that conform to the
+JavaBeans naming patterns for property getters and setters.  It is natural to
+then access these methods directly, using calls to the corresponding
+<code>getXxx</code> and <code>setXxx</code> methods.  However, there are some
+occasions where dynamic access to Java object properties (without compiled-in
+knowledge of the property getter and setter methods to be called) is needed.
+Example use cases include:</p>
+<ul>
+<li>Building scripting languages that interact with the Java object model
+    (such as the Bean Scripting Framework).</li>
+<li>Building template language processors for web presentation and similar
+    uses (such as JSP or Velocity).</li>
+<li>Building custom tag libraries for JSP and XSP environments (such as Jakarta
+    Taglibs, Struts, Cocoon).</li>
+<li>Consuming XML-based configuration resources (such as Ant build scripts, web
+    application deployment descriptors, Tomcat's <code>server.xml</code>
+    file).</li>
+</ul>
+
+<p>
+The Java language provides <em>Reflection</em> and <em>Introspection</em>
+APIs (see the <code>java.lang.reflect</code> and <code>java.beans</code>
+packages in the JDK Javadocs).  However, these APIs can be quite complex to
+understand and utilize.  The  <em>BeanUtils</em> component provides
+easy-to-use wrappers around these capabilities.
+</p>
+
+<subsection name='BeanUtils Core And Modules'>
+<p>
+The 1.7.x and 1.8.x releases of BeanUtils have distributed three jars:
+<ul>
+  <li><code>commons-beanutils.jar</code> - contains everything</li>
+  <li><code>commons-beanutils-core.jar</code> - excludes <i>Bean Collections</i> classes</li>
+  <li><code>commons-beanutils-bean-collections.jar</code> - only <i>Bean Collections</i> classes</li>
+</ul>
+The main <code>commons-beanutils.jar</code> has an <b><i>optional</i></b> dependency on
+<a href='http://commons.apache.org/collections'>Commons Collections</a>
+</p>
+<p>
+Version 1.9.0 reverts this split for reasons outlined at
+<a href="http://issues.apache.org/jira/browse/BEANUTILS-379">BEANUTILS-379</a>.
+There is now only one jar for the BeanUtils library.
+</p>
+</subsection>
+<subsection name='Bean Collections'>
+<p>
+Bean collections is a library combining BeanUtils with 
+<a href='http://commons.apache.org/collections'>Commons Collections</a>
+to provide services for collections of beans. One class (<code>BeanComparator</code>)
+was previously released, the rest are new. This new distribution strategy should allow
+this sub-component to evolve naturally without the concerns about size and scope
+that might otherwise happen.
+</p>
+<p>
+Bean Collections has an additional dependency on 
+<a href='http://commons.apache.org/collections'>Commons Collections</a>.
+</p>
+</subsection>
+</section>
+
+<section name="Releases">
+<subsection name="1.9.x releases">
+  <p>
+    BeanUtils <strong>1.9.x</strong> releases are binary compatible (with a minor exception
+    described in the release notes) with version 1.8.3 and require a minimum of
+    JDK 1.5.
+  </p>
+  <p>
+    The latest BeanUtils release is available to download
+    <a href="http://commons.apache.org/beanutils/download_beanutils.cgi">here</a>.
+  </p>
+  <ul>
+    <li>1.9.3
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.3/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.3/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+    <li>1.9.2
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.2/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.2/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+    <li>1.9.1
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.1/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.1/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+    <li>1.9.0
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.0/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.9.0/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+  </ul>
+</subsection>
+<subsection name="1.8.x releases">
+  <p>
+    BeanUtils <strong>1.8.x</strong> releases are binary compatible with version 1.7.0 and
+    require a minimum of JDK 1.3.
+  </p>
+  <ul>
+    <li>1.8.3
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.3/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.3/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+    <li>1.8.2
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.2/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.2/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+    <li>1.8.1
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.1/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.1/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+    <li>1.8.0
+      <ul>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.0/RELEASE-NOTES.txt">Release Notes</a></li>
+        <li><a href="http://commons.apache.org/beanutils/javadocs/v1.8.0/apidocs/index.html">JavaDoc</a></li>
+      </ul>
+    </li>
+  </ul>
+</subsection>
+<subsection name="1.7.0">
+<p>
+<strong>BeanUtils 1.7.0</strong> is a service release which removes the dependency
+upon a specific commons-collection library version. It may be safely used together
+with either the 2.x or 3.x series of commons-collections releases.
+It also introduces a number of important enhancements. It is backward compatible
+with the 1.6 release.
+    </p>
+<p>
+This important service release is intended to help downstream applications solve
+dependency issues. The dependency on commons collections (which has become problematic
+now that there are two incompatible series of commons collections releases)
+has been factored into a separate optional sub-component plus a small number of
+stable and mature <code>org.apache.commons.collections</code> packaged classes 
+(which are distributed with the BeanUtils core). This arrangement means that the 
+BeanUtils core sub-component (which is the primary dependency for most downsteam 
+applications) can now be safely included on the same classpath as commons collections 
+2.x, 3.x or indeed neither.
+</p>
+<p>
+The distribution now contains alternative jar sets. The all-in-one
+jar contains all classes. The modular jar set consists of a core jar dependent only
+on commons logging and an optional bean collections jar (containing classes that 
+provide easy and efficient ways to manage collections of beans) which depends on 
+commons collections 3.
+</p>
+</subsection>
+    <subsection name='Older Releases (Not Mirrored)'>
+    <p>
+    <ul>
+    <li>Version 1.6.1 - 18 Feb 2003 
+        <a href="http://archive.apache.org/dist/commons/beanutils/binaries/">binary</a> and
+        <a href="http://archive.apache.org/dist/commons/beanutils/source/">source</a></li>
+    <li>Version 1.6 - 21 Jan 2003 
+        <a href="http://archive.apache.org/dist/commons/beanutils/binaries/">binary</a> and
+        <a href="http://archive.apache.org/dist/commons/beanutils/source/">source</a></li>
+    <li><a href="http://archive.apache.org/dist/commons/beanutils/old/v1.5/">Version 1.5 </a> - 23 Oct 2002</li>
+    <li><a href="http://archive.apache.org/dist/commons/beanutils/old/v1.4.1/">Version 1.4.1</a> - 28 Aug 2002</li>
+    <li><a href="http://archive.apache.org/dist/commons/beanutils/old/v1.4/">Version 1.4</a> - 13 Aug 2002</li>
+    <li><a href="http://archive.apache.org/dist/commons/beanutils/old/v1.3/">Version 1.3</a> - 29 Apr 2002</li>
+    <li><a href="http://archive.apache.org/dist/commons/beanutils/old/v1.2/">Version 1.2</a> - 24 Dec 2001</li>
+    <li><a href="http://archive.apache.org/dist/commons/beanutils/old/v1.1/">Version 1.1</a> - 22 Sep 2001</li>
+    <li><a href="http://archive.apache.org/dist/commons/beanutils/old/v1.0/">Version 1.0</a> - 14 July 2001</li>
+    </ul>
+    </p>
+    </subsection>
+</section>
+
+
+<section name="Support">
+    <p>
+    The <a href="mail-lists.html">commons mailing lists</a> act as the main support forum.
+    The user list is suitable for most library usage queries.
+    The dev list is intended for the development discussion.
+    Please remember that the lists are shared between all commons components,
+    so prefix your email by [beanutils].
+    </p>
+
+    <p>
+    Issues may be reported via <a href="issue-tracking.html">ASF JIRA</a>.
+    </p>
+    </section>
+
+
+</body>
+</document>
