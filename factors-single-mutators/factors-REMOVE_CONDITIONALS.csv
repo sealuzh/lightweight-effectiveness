@@ -1,4 +1,5 @@
 metrics,rel,d-value
+line_coverage,-,0.92 (large)
 isAssertionRoulette,+,0.25 (small)
 isEagerTest,+,0.18 (small)
 LOC_prod,+,0.41 (medium)

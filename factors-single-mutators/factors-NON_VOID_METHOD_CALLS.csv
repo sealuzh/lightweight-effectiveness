@@ -1,4 +1,5 @@
 metrics,rel,d-value
+line_coverage,-,0.82 (large)
 isEagerTest,+,0.18 (small)
 LOC_prod,+,0.37 (medium)
 HALSTEAD_prod,+,0.33 (small)
