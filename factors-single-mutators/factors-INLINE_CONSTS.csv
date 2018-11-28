@@ -1,4 +1,5 @@
 metrics,rel,d-value
+line_coverage,-,0.45 (medium)
 isAssertionRoulette,-,0.22 (small)
 LOC_prod,+,0.18 (small)
 RFC_prod,+,0.27 (small)

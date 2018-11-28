@@ -1,4 +1,5 @@
 metrics,rel,d-value
+line_coverage,-,0.63 (large)
 LOC_prod,+,0.34 (medium)
 HALSTEAD_prod,+,0.32 (small)
 RFC_prod,+,0.36 (medium)
