@@ -6,13 +6,14 @@ __license__ = "MIT"
 __email__ = "grano@ifi.uzh.ch"
 
 
-def get_pitest_maven_skeleton(class_to_mutate, test_to_run, threads=4):
+def get_pitest_maven_skeleton(class_to_mutate, test_to_run, mutator='ALL', threads=4):
     """Returns the string to inject into the pom to run the mutation analysis
 
     Arguments
     -------------
     - class_to_mutate: the name of the class
     - test_to_run: the name of the test to run against the mutation
+    - mutator: the mutator to use
     - threads: the number of tests to use
 
     """
@@ -34,7 +35,9 @@ def get_pitest_maven_skeleton(class_to_mutate, test_to_run, threads=4):
     </param>
     </targetTests>
     <mutators>
-    <mutator>ALL</mutator>
+    <mutator>
+    """+mutator+"""
+    </mutator>
     </mutators>
     <avoidCallsTo>
     <threads>"""+str(threads)+"""</threads>
@@ -49,7 +52,7 @@ def get_pitest_maven_skeleton(class_to_mutate, test_to_run, threads=4):
     return string_to_inject
 
 
-def generate_new_pom(project, class_to_mutate, test_to_run):
+def generate_new_pom(project, class_to_mutate, test_to_run, mutator):
     """Generates a new pom, reading the cached one in cached_pom.xml, adding the
     pitest maven goal
 
@@ -73,7 +76,7 @@ def generate_new_pom(project, class_to_mutate, test_to_run):
         for line in aux_pom.readlines():
             if build_flag and line.strip().startswith('<plugins>'):
                 write_line(new_pom, line)
-                write_pitest_pom(new_pom, class_to_mutate, test_to_run)
+                write_pitest_pom(new_pom, class_to_mutate, test_to_run, mutator)
                 build_flag = False
                 written_flag = True
                 continue
@@ -94,7 +97,7 @@ def write_line(write, line):
     write.write(line)
 
 
-def write_pitest_pom(write, class_to_mutate, test_to_run):
+def write_pitest_pom(write, class_to_mutate, test_to_run, mutator):
     """Writes the injected pitest goal into the new pom
 
     Arguments
@@ -104,11 +107,15 @@ def write_pitest_pom(write, class_to_mutate, test_to_run):
     - test_to_run: the name for the test to run against the mutation
 
     """
-    write.write(get_pitest_maven_skeleton(class_to_mutate, test_to_run))
+    write.write(get_pitest_maven_skeleton(class_to_mutate, test_to_run, mutator=mutator))
 
 
 if __name__ == '__main__':
     project_name = sys.argv[1]
     class_to_mutate = sys.argv[2]
     test_to_run = sys.argv[3]
-    generate_new_pom(project_name, class_to_mutate, test_to_run)
+    operator = sys.argv[4]
+    generate_new_pom(project=project_name,
+                     class_to_mutate=class_to_mutate,
+                     test_to_run=test_to_run,
+                     mutator=operator)

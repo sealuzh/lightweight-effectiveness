@@ -1,9 +1,9 @@
 library(effsize)
 library(xtable)
 
-good_test <- read.csv("good_tests.csv")
-bad_test <- read.csv("bad_tests.csv")
-metrics <- colnames(good_test)[9:86]
+good_test <- read.csv("../../data/good_tests.csv")
+bad_test <- read.csv("../../data/bad_tests.csv")
+metrics <- colnames(good_test)[10:76]
 
 p_values <- c()
 for (metric in metrics) {

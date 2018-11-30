@@ -2,10 +2,10 @@ import pandas as pd
 import plotly.plotly as py
 import plotly.graph_objs as go
 from effectiveness.settings import *
-py.sign_in('granoifi', 'yBY0BL7EvqRGPMeXP5jW')
+py.sign_in('*******', '*******')
 
 
-def main(frame):
+def main(frame, models=['dynamic', 'static'], technique='rfc'):
     f = pd.read_csv(frame, index_col=0)
     features_importance = []
     for index, row in f.iterrows():
@@ -14,11 +14,13 @@ def main(frame):
 
     s = sorted(zip(map(lambda x: round(x, 3), features_importance), metrics), reverse=True)
     print(s[0:20])
-    plot_feature_importance(s[0:20], frame.replace(".csv", ".pdf"))
-    # plot_fancy_thing(s[0:20], frame.replace(".csv", ".pdf"))
+    if model == 'static':
+        plot_feature_importance(s[0:20], '{}-{}'.format(model, technique))
+    else:
+        plot_fancy_thing(s[0:20], '{}-{}'.format(model, technique))
 
 
-def plot_fancy_thing(metrics, save_name):
+def plot_fancy_thing(metrics, output_name):
     """
     Draws a bar plot of the metrics passed as parameter;
     It requires a plotly account to be locally installed on the machine
@@ -32,7 +34,7 @@ def plot_fancy_thing(metrics, save_name):
     names = [x.replace('_test', ' test') for x in names]
     names = [x.replace('csm_', '') for x in names]
     names = [x.replace('_', ' ') for x in names]
-    names = [x.replace('is', ' ') for x in names]
+    names = [x.replace('is', '') for x in names]
 
     data = []
     index = 0
@@ -57,6 +59,7 @@ def plot_fancy_thing(metrics, save_name):
 
     layout = go.Layout(
         xaxis=dict(
+            title="Mean Decrease in Impurity",
             titlefont=dict(
               size=16,
               color='black'
@@ -80,7 +83,7 @@ def plot_fancy_thing(metrics, save_name):
         margin=go.Margin(
             l=80,
             r=50,
-            b=40,
+            b=70,
             t=20,
             pad=10
         ),
@@ -96,15 +99,15 @@ def plot_fancy_thing(metrics, save_name):
     )
 
     fig = go.Figure(data=data, layout=layout)
-    py.image.save_as(fig, filename=save_name)
+    py.image.save_as(fig, filename='{}/{}.pdf'.format(PLOT_DIR, output_name))
 
 
-def plot_feature_importance(metrics, name):
+def plot_feature_importance(metrics, output_name):
     """
     Draws a bar plot of the metrics passed as parameter;
     It requires a plotly account to be locally installed on the machine
     :param metrics: the metrics to plot
-    :param name: the name of the metrics
+    :param output_name: the name of the metrics
     """
     values, names = zip(*metrics)
     names = [x.replace('CONNECTIVITY', 'CONNECT.') for x in names]
@@ -122,6 +125,7 @@ def plot_feature_importance(metrics, name):
 
     layout = go.Layout(
         xaxis=dict(
+            title="Mean Decrease in Impurity",
             titlefont=dict(
               size=16,
               color='black'
@@ -145,7 +149,7 @@ def plot_feature_importance(metrics, name):
         margin=go.Margin(
             l=160,
             r=50,
-            b=50,
+            b=70,
             t=20,
             pad=10
         ),
@@ -157,9 +161,13 @@ def plot_feature_importance(metrics, name):
     )
 
     fig = go.Figure(data=data, layout=layout)
-    py.image.save_as(fig, filename='{}/{}.pdf'.format(DATA_DIR, name))
+    py.image.save_as(fig, filename='{}/{}.pdf'.format(PLOT_DIR, output_name))
 
 
 if __name__ == '__main__':
-    main('estimation_with.csv')
-    # main('estimation_no_cov.csv')
+    models = ['dynamic', 'static']
+    technique = 'rfc'
+    for model in models:
+        path = os.path.join(DATA_DIR, 'features_importance_{}_{}.csv'.format(model, technique))
+        if os.path.exists(path):
+            main(path)

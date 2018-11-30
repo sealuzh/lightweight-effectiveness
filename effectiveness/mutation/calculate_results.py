@@ -9,14 +9,14 @@ __license__ = "MIT"
 __email__ = "grano@ifi.uzh.ch"
 
 
-def calculate_results(default_dir=RESULTS_DIR, clean=True):
+def calculate_results(default_dir=RESULTS_DIR, clean=True, name='results'):
     """Aggregates all the mutations calculated and add the information about the mutation
 
     Arguments
     -------------
-    - default_dir: the dir where all the csv files are stores
-    - clean: flag to remove classes with no mutations
-
+    :param default_dir: the dir where all the csv files are stores
+    :param clean: flag to remove classes with no mutations
+    :param name: the name of the output file
     """
     if not os.path.isdir(default_dir):
         print("No dir to process! You're missing some previous steps")
@@ -27,33 +27,45 @@ def calculate_results(default_dir=RESULTS_DIR, clean=True):
         frames.append(pd.read_csv(project))
     aggregate = pd.concat(frames)
     aggregate[['module']] = aggregate[['module']].fillna(value='')
-    aggregate['mutation'] = aggregate.apply(lambda x: get_mutation_value_html(x), axis=1)
-    aggregate['no_mutations'] = aggregate.apply(lambda x: get_mutation_value_html(x, True), axis=1)
-    aggregate['line_coverage'] = aggregate.apply(lambda x: get_mutation_value_html(x, False, True), axis=1)
+    aggregate['mutation'] = aggregate.\
+        apply(lambda x: get_mutation_value_html(row=x,
+                                                path_mutation=MUTATION_RESULTS+'-'+operator),
+              axis=1)
+    aggregate['no_mutations'] = aggregate.\
+        apply(lambda x: get_mutation_value_html(row=x,
+                                                ret_no_mutation=True,
+                                                path_mutation=MUTATION_RESULTS + '-' + operator),
+              axis=1)
+    aggregate['line_coverage'] = aggregate.\
+        apply(lambda x: get_mutation_value_html(row=x,
+                                                ret_no_mutation=False,
+                                                ret_line_cov=True,
+                                                path_mutation=MUTATION_RESULTS+'-'+operator), axis=1)
 
     if clean:
         print('Rows before the cleaning = {}'.format(aggregate.shape[0]))
         aggregate = aggregate.dropna()
         aggregate = aggregate[aggregate['no_mutations'] != 0]
         print('Rows after the cleaning = {}'.format(aggregate.shape[0]))
-    aggregate.to_csv('{}/results.csv'.format(METRICS_DIR), index=False)
+    aggregate.to_csv('{}/{}.csv'.format(METRICS_DIR, name), index=False)
 
 
-def get_mutation_value_html(row, ret_no_mutation=False, ret_line_cov=False):
+def get_mutation_value_html(row, ret_no_mutation=False, ret_line_cov=False, path_mutation=MUTATION_RESULTS):
     """Functions called into the lambda to calculate the mutation
     The output from pitest needs to be in HTML format
 
     Arguments
     -------------
-    - row: the row of the of the data frame
-    - ret_no_mutation: if true, returns the number of mutations; if false, the mutation score
-
+    :param row: the row of the of the data frame
+    :param ret_no_mutation: if true, returns the number of mutations; if false, the mutation score
+    :param ret_line_cov: line the parameter above
+    :param path_mutation: the path where the mutation is
     """
     module_name = row.module
     if module_name == '':
-        path = '{}/'.format(MUTATION_RESULTS) + row.project + '/' + row.test_name + '/**/index.html'
+        path = '{}/'.format(path_mutation) + row.project + '/' + row.test_name + '/**/index.html'
     else:
-        path = '{}/'.format(MUTATION_RESULTS) + row.project + '/' + module_name + '-' + row.test_name + '/**/index.html'
+        path = '{}/'.format(path_mutation) + row.project + '/' + module_name + '-' + row.test_name + '/**/index.html'
     mutation_file = glob.glob(path, recursive=True)
     if not mutation_file:
         # no file = no mutations
@@ -105,4 +117,6 @@ def get_number_of_mutations(path):
 
 
 if __name__ == '__main__':
-    calculate_results()
+    for operator in ALL_OPERATORS:
+        calculate_results(name='results-{}'.format(operator))
+    # calculate_results()

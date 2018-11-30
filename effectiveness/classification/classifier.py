@@ -34,8 +34,9 @@ def import_frame(consider_coverage=True):
 
     positive_example = pd.read_csv('{}/good_tests.csv'.format(DATA_DIR))
     negative_example = pd.read_csv('{}/bad_tests.csv'.format(DATA_DIR))
-    index = 8 if consider_coverage else 9
-    metrics = positive_example.columns[index:-10].tolist()
+    coverage_index = list(positive_example.columns).index('line_coverage')
+    index = coverage_index if consider_coverage else coverage_index+1
+    metrics = positive_example.columns[index::].tolist()
     positive_example['y'] = positive_example.apply(lambda x: 1, axis=1)
     negative_example['y'] = negative_example.apply(lambda x: 0, axis=1)
 
@@ -141,7 +142,7 @@ def classification(consider_coverage=True, n_inner=5, n_outer=10, algorithm='all
 
     X = frame[metrics]
     Y = frame['y']
-
+    print('Running with {} metrics'.format(metrics))
     pipe = Pipeline([('preprocessing', StandardScaler()),
                      ('classifier', SVC())])
 
