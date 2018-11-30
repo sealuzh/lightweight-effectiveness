@@ -51,7 +51,16 @@ def process_results(mutation=METRICS_DIR+'/results.csv', smells=METRICS_DIR+'/te
     # filter according to the ck metrics we have
     all_tests = ck_frame['className'].tolist()
     filtered_frame = filtered_frame[filtered_frame['test_name'].isin(all_tests)]
+    filtered_frame = filtered_frame[filtered_frame['class_name'].isin(all_tests)]
     print('* After cks \t{}'.format(len(filtered_frame)))
+    prod_readability = pd.read_csv('{}/source_readability.csv'.format(readability))
+    all_classes = prod_readability['tested_class'].tolist()
+    filtered_frame = filtered_frame[filtered_frame['class_name'].isin(all_classes)]
+    print("* After class readability = {}".format(filtered_frame.shape[0]))
+    test_readability = pd.read_csv('{}/test_readability.csv'.format(readability))
+    all_tests = test_readability['tested_class'].tolist()
+    filtered_frame = filtered_frame[filtered_frame['class_name'].isin(all_tests)]
+    print("* After test readability = {}".format(filtered_frame.shape[0]))
 
     test_smells_metrics = ['isAssertionRoulette', 'isEagerTest', 'isLazyTest', 'isMysteryGuest',
                            'isSensitiveEquality', 'isResourceOptimism', 'isForTestersOnly',
@@ -97,8 +106,6 @@ def process_results(mutation=METRICS_DIR+'/results.csv', smells=METRICS_DIR+'/te
 
     print("*-------------------------------------------")
     print("* Processing readability:")
-    prod_readability = pd.read_csv('{}/source_readability.csv'.format(readability))
-    test_readability = pd.read_csv('{}/test_readability.csv'.format(readability))
     print("- Processing production readability")
     filtered_frame['prod_readability'] = filtered_frame.apply(lambda x: get_readability(x, prod_readability),
                                                               axis=1)
@@ -144,12 +151,7 @@ def get_readability(row, frame, key='class_name', verbose=False):
     aux = frame[frame['tested_class'] == cut]['readability']
     if len(aux) != 1 and verbose:
         print("\t* {} entries for {}".format(str(len(aux)), cut))
-    try:
-        return aux.iloc[0]
-    except IndexError:
-        print(aux)
-        print('no value here')
-        return 0
+    return aux.iloc[0]
 
 
 def get_production_code_smell(row, frame, smell, key='class_name', verbose=False):
@@ -199,11 +201,14 @@ def get_ck_value(row, ck_frame, metric, key='class_name', verbose=False):
     return aux.iloc[0]
 
 
-def separate_sets(complete_frame=METRICS_DIR+'/merge.csv', delimiter='quartile'):
+def separate_sets(complete_frame=METRICS_DIR+'/merge.csv', delimiter='quartile',
+                  name_good='good_tests', name_bad='bad_tests'):
     """
     It separates
     :param complete_frame: the frame to read with the metrics
     :param delimiter: the valued used to split the sets
+    :param name_good: the name for the frame with the effective tests
+    :param name_bad: the name for the frame with the non effective tests
     :return:
     """
     frame = pd.read_csv(complete_frame)
@@ -215,15 +220,15 @@ def separate_sets(complete_frame=METRICS_DIR+'/merge.csv', delimiter='quartile')
     if delimiter == 'quartile':
         bad_tests = frame[frame['mutation'] <= lower_quantile]
         good_tests = frame[frame['mutation'] >= upper_quantile]
-        bad_tests.to_csv(os.path.join(DATA_DIR, 'bad_tests.csv'), index=False)
-        good_tests.to_csv(os.path.join(DATA_DIR, 'good_tests.csv'), index=False)
+        bad_tests.to_csv(os.path.join(DATA_DIR, '{}.csv'.format(name_good)), index=False)
+        good_tests.to_csv(os.path.join(DATA_DIR, '{}.csv'.format(name_bad)), index=False)
         print("* Good tests quantile = {}".format(len(good_tests)))
         print("* Bad tests quantile = {}".format(len(bad_tests)))
     else:
         bad_tests = frame[frame['mutation'] <= median]
         good_tests = frame[frame['mutation'] > median]
-        bad_tests.to_csv(os.path.join(DATA_DIR, 'bad_tests_median.csv'), index=False)
-        good_tests.to_csv(os.path.join(DATA_DIR, 'good_tests_median.csv'), index=False)
+        bad_tests.to_csv(os.path.join(DATA_DIR, '{}_median.csv'.format(name_good)), index=False)
+        good_tests.to_csv(os.path.join(DATA_DIR, '{}_median.csv'.format(name_bad)), index=False)
         print("* Good tests median = {}".format(len(good_tests)))
         print("* Bad tests median = {}".format(len(bad_tests)))
 
@@ -255,5 +260,12 @@ def count_smells(complete_frame='merge.csv'):
 
 
 if __name__ == '__main__':
-    process_results()
-    separate_sets()
+
+    for operator in ALL_OPERATORS:
+        process_results(mutation=METRICS_DIR+'/results-{}.csv'.format(operator),
+                    output=METRICS_DIR + '/merge-{}.csv'.format(operator))
+        separate_sets(complete_frame=METRICS_DIR+'/merge-{}.csv'.format(operator),
+                      name_good='good_tests-{}'.format(operator),
+                      name_bad='bad_tests-{}'.format(operator))
+    # process_results()
+    # separate_sets()
