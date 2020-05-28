@@ -74,7 +74,7 @@ The _dynamic_ suffix indicate the model trained with the line coverage metric, w
 All the files with the metric values are available in [this](https://github.com/sealuzh/lightweight-effectiveness/tree/master/metrics) directory.
 
 ## Projects
-We also share the entire set of 18 projects used in the study [here](https://github.com/sealuzh/lightweight-effectiveness/tree/master/projects)
+We also share the list of the 18 projects used in the study, along with the commit used [here](https://github.com/sealuzh/lightweight-effectiveness/tree/master/projects)
 
 ## Metrics Used
 A detailed list of the metrics used in this work is reported at this [link](https://github.com/sealuzh/lightweight-effectiveness/blob/master/metrics.md) or, alternatively, in the wiki page of this repository.
