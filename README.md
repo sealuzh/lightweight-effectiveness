@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/140173281.svg)](https://zenodo.org/badge/latestdoi/140173281)
+
 # Replication Package 
 
 In this replication package we make available **every** single script needed to **fully** replicate the results obtained in our paper.
