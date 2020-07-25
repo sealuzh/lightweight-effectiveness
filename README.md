@@ -80,6 +80,7 @@ We also share the list of the 18 projects used in the study, along with the comm
 
 ## Metrics Used
 A detailed list of the metrics used in this work is reported at this [link](https://github.com/sealuzh/lightweight-effectiveness/blob/master/metrics.md) or, alternatively, in the wiki page of this repository.
+The APIs for the computation of the metics can be found [here](https://github.com/sealuzh/lightweight-effectiveness/blob/metrics-api-usage)
 
 ## Tool Versions 
 In this work we rely on the following tools:
