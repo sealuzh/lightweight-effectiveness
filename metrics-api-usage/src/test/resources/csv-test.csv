@@ -1,0 +1,2 @@
+path_test,test_name,path_src,class_name
+/Users/grano/Desktop/lightweight-effectiveness/projects/commons-lang/src/test/java/org/apache/commons/lang3/BooleanUtilsTest.java,org.apache.commons.lang3.BooleanUtilsTest,/Users/grano/Desktop/lightweight-effectiveness/projects/commons-lang/src/main/java/org/apache/commons/lang3/BooleanUtils.java,org.apache.commons.lang3.BooleanUtils
