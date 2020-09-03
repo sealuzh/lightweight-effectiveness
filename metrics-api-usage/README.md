@@ -13,7 +13,7 @@ To execute such a program please modify the `pom.xml` file and add the three arg
 
 Thus, run the following command:
 ```
-mvn install; mvn package; mvn exec:java
+mvn install:install-file; mvn package; mvn exec:java
 ```
 
 ## Readability metric
